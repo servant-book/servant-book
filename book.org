@@ -1,7 +1,7 @@
 #+TITLE: Servant at your service
 #+LANGUAGE: en
 #+LaTeX_CLASS: article
-#+LaTeX_CLASS_OPTIONS: [a4paper,final]
+#+LaTeX_CLASS_OPTIONS: [a4paper,drafting]
 
 #+LATEX_HEADER: \renewcommand\maketitle{}
 
@@ -97,6 +97,11 @@ Servant? Do we need this?
 \drafting
 
 ddd
+
+Make a reference to some paper cite:augello2015social
+(need to install https://github.com/jkitchin/org-ref, idk,
+it seemed a good idea when working alone.)
+
 
 * Simple web servant
 \todo{move to intro}
