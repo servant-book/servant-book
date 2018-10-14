@@ -1,114 +1,23 @@
-#+TITLE: Servant at your service
-#+LANGUAGE: en
-#+LaTeX_CLASS: article
-#+LaTeX_CLASS_OPTIONS: [a4paper,final]
+Title: Pragmatic Haskell: Simple servant web server Date: 2018-06-25
+15:25 Category: tools OPTIONS: toc:nil Tags: haskell, programming,
+tools, servant, stack, tutorial, pragmatic-haskell subreddit: haskell
+programming
 
-#+LATEX_HEADER: \renewcommand\maketitle{}
+1. [[file:%7Bfilename%7D/pragmatic-haskell-simple-servant.md][Pragmatic
+   Haskell: Simple servant web server]]
+2. [[file:%7Bfilename%7D/pragmatic-haskell-message-servant.md][Pragmatic
+   Haskell II: IO Webservant]]
+3. [[file:%7Bfilename%7D/pragmatic-haskell-database.md][Pragmatic
+   Haskell III: Beam Postgres DB]]
 
-# disable tic so it doesn't appear at the top but where we want it instead
-#+Options: toc:nil ^:nil 
-
-# we have our own title
-#+Options: title:nil
-
-# we don't want numbering to appear in front of headings until
-#+OPTIONS: H:5
-
-# table alternating colors
-#+LATEX_HEADER: \usepackage[table,fancyvrb]{xcolor}
-
-# bibtex stuff
-#+LATEX_HEADER: \usepackage[square,sort,comma,numbers]{natbib}
-#+LATEX_HEADER: \renewcommand{\bibsection}{}
-
-# todo notes
-#+LATEX_HEADER: \usepackage[obeyFinal, colorinlistoftodos]{todonotes}
-#+LATEX_HEADER: \newcommand{\ask}[1]{\todo[color=cyan]{#1}}
-#+LATEX_HEADER: \newcommand{\dignum}[1]{\todo[color=brown]{#1}}
-#+LATEX_HEADER: \newcommand{\drafting}{\todo[noline, color=gray]{working draft}}
-#+LATEX_HEADER: \newcommand{\toReview}{\todo[noline, color=yellow]{to review}}
-#+LATEX_HEADER: \newcommand{\newlyCleared}{\todo[noline, backgroundcolor=white, bordercolor=red]{newly cleared}}
-# (something cleared that was under discussion last time)
-#+LATEX_HEADER: \newcommand{\cleared}{\todo[noline, color=white]{cleared}}
-#+LATEX_HEADER: \newcommand{\doubleCleared}{\todo[noline, backgroundcolor=white, bordercolor=gray]{cleared II}}
-#+LATEX_HEADER: \newcommand{\tripleCleared}{\todo[noline, backgroundcolor=white, bordercolor=lightgray]{cleared III}}
-#+LATEX_HEADER: \newcommand{\quadCleared}{\todo[noline, backgroundcolor=white, bordercolor=white]{cleared IV}}
-
-# alternating table rows
-#+LATEX: \rowcolors{1}{white}{gray!25}
-
-# Title page
-#+LATEX: \input{title}
-
-# The order of this thesis will be done in a way to let future researcher
-# decide the value of the thesis quickly
-# 1. First the abstract to let a researcher quickly discard this thesis if necessary.
-# 2. The toc, to let a researcher jump to interesting pages quickly.
-# 3. The introduction and main body of the thesis. If all else fails a
-# researcher can use this as fallback
-
-# smaller code font size (cause mostly boring XML)
-#+LATEX_HEADER: \RequirePackage{fancyvrb}
-#+LATEX_HEADER: \DefineVerbatimEnvironment{verbatim}{Verbatim}{fontsize=\scriptsize}
-# Make listing captions smaller, to fit with smaller code size
-#+LATEX_HEADER: \usepackage[skip=0pt]{caption}
-#+LATEX_HEADER: \captionsetup[listing]{font=footnotesize}
-#+LATEX_HEADER: \captionsetup[table]{skip=5pt}
-#+LATEX_HEADER: \captionsetup[figure]{skip=10pt}
-
-# Inline code has a light grey background
-#+LATEX_HEADER: \usepackage{xcolor}
-#+LATEX_HEADER: \usepackage{soul}
-#+LATEX_HEADER: \definecolor{Light}{gray}{.85}
-#+LATEX_HEADER: \sethlcolor{Light}
-
-#+LATEX_HEADER: \let\OldTexttt\texttt
-#+LATEX_HEADER: \renewcommand{\texttt}[1]{\OldTexttt{\hl{#1}}}%
-
-# for \FloatBarrier, prevents figures from floating over sections etc
-#+LATEX_HEADER: \usepackage{placeins}
-
-\todo[inline]{Table alteration darker: dark enough now?}
-** Abstract                                                          
-:PROPERTIES:
-:UNNUMBERED: t
-:END:
-
-#+BEGIN_CENTER
-
-\drafting
-Maybe a motivation instead
-
-#+END_CENTER
-
-*** Keywords
-:PROPERTIES:
-:UNNUMBERED: t
-:END:
-\drafting
-Servant? Do we need this?
-
-\newpage
-#+TOC: headlines 2
-
-\newpage
-
-* Introduction
-\drafting
-
-ddd
-
-* Simple web servant
-\todo{move to intro}
 There are many [[https://github.com/bitemyapp/learnhaskell][guides
 available]] for learning Haskell. Setting up a something simple like a
 web server isn't so straight forward. Perhaps choosing one of the
 [[https://wiki.haskell.org/Web/Frameworks][14 libraries]] is a bit much.
 
 #+CAPTION: Type level hell: Haskell sucks
-[[images/haskell-sucks.jpg]]
+[[/images/2018/haskell-sucks.jpg]]
 
-\toReview
 This guide will give opinionated web server start. This guide assumes no
 experience with Haskell, and will get you up to speed with a (REST) web
 server called
@@ -118,25 +27,22 @@ future this guide may be used as a foundation to create something more
 meaningful than just a very basic REST API, this will provide a good
 starting point however. Basic UNIX (command line) skills are assumed.
 
-** from nothing, start with build tools
+* From nothing, start with build tools
   :PROPERTIES:
   :CUSTOM_ID: from-nothing-start-with-build-tools
   :END:
 
-\toReview
 Install stack:
 
 #+BEGIN_SRC sh
     curl -sSL https://get.haskellstack.org/ | sh
 #+END_SRC
 
-\toReview
 Only attempt shortly to install it trough a package manager. There are
 other Haskell build tools, they will be more difficult in use. There is
 also the possibility for fully reproducible builds at a system level
 (nix). Which is out of the scope of this guide.
 
-\toReview
 Now setup a new project:
 
 #+BEGIN_SRC sh
@@ -144,19 +50,17 @@ Now setup a new project:
     cd awesome-project-name
 #+END_SRC
 
-** Hello world with stack
+* Hello world with stack
   :PROPERTIES:
   :CUSTOM_ID: hello-world-with-stack
   :END:
 
-\toReview
 Appreciate what happens when this is build:
 
 #+BEGIN_SRC sh
     stack build && stack exec awesome-project-name-exe
 #+END_SRC
 
-\toReview
 This should build successfully and output =someFunc=. Open up
 =src/Lib.hs= with one's favorite editor. This contains a few lines,
 created by stack:
@@ -170,7 +74,6 @@ created by stack:
     someFunc = putStrLn "someFunc"
 #+END_SRC
 
-\toReview
 This is where the =someFunc= output came from when the program was ran.
 Change it to something a bit more appropriate, and rename the function
 too:
@@ -184,7 +87,6 @@ too:
     webAppEntry = putStrLn "This is the beginning of my greetings to world"
 #+END_SRC
 
-\toReview
 Does it compile?
 
 #+BEGIN_SRC sh
@@ -196,14 +98,12 @@ Does it compile?
       \|        ^^^^^^^^
 #+END_SRC
 
-\toReview
 It does not compile. There is an app folder where by default all the
 executable reside (which is where the error occurs), and a =src= folder
 where the library code lives (the modified file is in there). One can
 future proving themselves by putting as much code in the library as is
 reasonable.
 
-\toReview
 Fix the error in =app/Main.hs=:
 
 #+BEGIN_SRC haskell
@@ -215,16 +115,14 @@ Fix the error in =app/Main.hs=:
     main = webAppEntry
 #+END_SRC
 
-\toReview
 It builds! Functions can be renamed, simple compile errors can be
 solved, and strings can be changed. Progress!
 
-** Servant: Your first dependencies
+* Servant: Your first dependencies
   :PROPERTIES:
   :CUSTOM_ID: servant-your-first-dependencies
   :END:
 
-\toReview
 For the impatient, there is a minimal example already
 [[https://github.com/haskell-servant/example-servant-minimal][available]]
 by the library author. This guide will explain how to get there step by
@@ -240,13 +138,11 @@ step. In =./package.yaml=, on line 22 there is a =dependencies= key, add
     - warp 
 #+END_EXAMPLE
 
-\toReview
 It may seem strange to immediately add four new dependencies, however
 this is because Haskell libraries are setup to be flexible. Even small
 projects grow quickly to have into the twenties of dependencies. Code
 reuse is not [[https://www.youtube.com/watch?v=Jn3kdTaa69U][a myth]].
 
-\toReview
 =servant-server= is the
 [[http://haskell-servant.readthedocs.io/en/stable/][servant web
 server]]. [[http://hackage.haskell.org/package/aeson][=aeson=]] is for
@@ -255,18 +151,16 @@ JSON parsing and producing.
 interface and [[http://hackage.haskell.org/package/warp][=warp=]] uses
 =wai= to implement a web application (it binds to the port).
 
-\toReview
 Ensure that that this is done at the root of the yaml file (no
 indentation). Stack provides a way of specifying dependencies of either
 the executable or library. If its done on line 22, the root of the yaml
 file, it will be a dependency for everything in the project.
 
-** A minimal servant
+* A minimal servant
   :PROPERTIES:
   :CUSTOM_ID: a-minimal-servant
   :END:
 
-\toReview
 A good start is going to servants'
 [[http://hackage.haskell.org/package/servant][Hackage]] page, which
 linked to a
@@ -275,7 +169,6 @@ Servant does API definition
 [[http://haskell-servant.readthedocs.io/en/stable/tutorial/ApiType.html][at
 type level]].
 
-\toReview
 If it's unknown to the reader what a type is, think of it as describing
 the shape of a function. Functions of different shapes don't fit
 together, and won't compile. What servant allows us to do is define this
@@ -326,12 +219,11 @@ minimal servant (=Lib.hs=) server:
     webAppEntry = run 6868 app
 #+END_SRC
 
-*** Language extensions
+** Language extensions
    :PROPERTIES:
    :CUSTOM_ID: language-extensions
    :END:
 
-\toReview
 The first three lines are languages extensions, Haskell behaves
 different for this module according to these. data kinds Can be
 temporary deleted to see what happens:
@@ -350,24 +242,21 @@ temporary deleted to see what happens:
        |                               ^^^^^^^
 #+END_SRC
 
-\toReview
 Data kinds is needed to insert data into a type. A string being data in
 this case, it is unclear what ='[JSON]= is, probably also something
 data. Temporary breaking a program to see what GHC will say is an
 effective way of learning more about Haskell.
 
-\toReview
 If =TypeOperators= is disabled, GHC says it doesn't like =:>= in the
 =UserAPI= line. Apparently =:>= is a type operator. Apparently types can
 have operators.
 
-\toReview
 If =DeriveGeneric= is disabled, GHC says it needs to derive
 [[https://wiki.haskell.org/GHC.Generics][generic]] in the data
 definition of User. Generic is required for serialization (in our case
 JSON conversion).
 
-*** Modules
+** Modules
    :PROPERTIES:
    :CUSTOM_ID: modules
    :END:
@@ -384,13 +273,12 @@ JSON conversion).
     import Network.Wai.Handler.Warp(run)
 #+END_SRC
 
-\toReview
 Moving onward, there is the module definition that stack generated,
 modules are just namespaces, or similar to python modules. Nothing
 really special about those. Then there are many imports which pull
 functions into the module namespace.
 
-*** Type level REST API
+** Type level REST API
    :PROPERTIES:
    :CUSTOM_ID: type-level-rest-api
    :END:
@@ -399,7 +287,6 @@ functions into the module namespace.
     type UserAPI = "users" :> Get '[JSON] [User]
 #+END_SRC
 
-\toReview
 This line defines the UserAPI type, which will serve as the REST
 endpoint. The image at the beginning of the post was about this line.
 Perhaps reading it as a sentence will give us some insight, without
@@ -407,7 +294,7 @@ worrying about how it fits together: It's a Get request, mounted below
 =/user=, returning something JSON and of shape/type User. Conveniently
 what a =User= is will be discussed in the next section.
 
-*** Domain data
+** Domain data
    :PROPERTIES:
    :CUSTOM_ID: domain-data
    :END:
@@ -421,7 +308,6 @@ what a =User= is will be discussed in the next section.
     instance ToJSON User
 #+END_SRC
 
-\toReview
 User is just a data structure consisting of two strings: Email and name.
 This declaration method is called
 [[http://learnyouahaskell.com/making-our-own-types-and-typeclasses#record-syntax][record
@@ -434,19 +320,17 @@ it will know what to do (show is toString in Haskell).
 =instance ToJSON User= allows the User to be converted to JSON
 (implementation is provided by generic).
 
-*** Functions
+** Functions
    :PROPERTIES:
    :CUSTOM_ID: functions
    :END:
 
-\toReview
 Done with data, time for code!
 
 #+BEGIN_SRC haskell
     users :: [User]
 #+END_SRC
 
-\toReview
 Specifies a function that will always return a list of Users. There are
 no arguments to this function. It can be assumed the list is always the
 same. This is how immutable constants are specified.
@@ -458,12 +342,11 @@ same. This is how immutable constants are specified.
       ]
 #+END_SRC
 
-\toReview
 This is the implementation of the before defined function. There are
 apparently two users in this list, one Isaac, and another Einstein. Note
 that positional arguments are used to create the Users.
 
-*** Servant server
+** Servant server
    :PROPERTIES:
    :CUSTOM_ID: servant-server
    :END:
@@ -472,7 +355,6 @@ that positional arguments are used to create the Users.
     server :: Server UserAPI
 #+END_SRC
 
-\toReview
 =server :: Server UserAPI= says that there is something called a Server
 which has a UserAPI. A UserAPI is known, it is defined above. A
 [[http://hackage.haskell.org/package/servant-server-0.14/docs/Servant-Server.html#t:Server][=Server=]]
@@ -481,19 +363,17 @@ is defined in servant. The type signature is rather complicated:
 =ServerT= introduces a lot of complexity:
 =type ServerT api (m :: * -> *) :: *=.
 
-\toReview
 There are some clues that can be derived (such as that =m=), but it's
 not that important to make something work. Therefore this guide ignores
 it. Note that ignoring scary looking things is an important Haskell
 technique. If one is interested, help can be found
 [[https://groups.google.com/forum/#!forum/haskell-servant][here]], just
-in case.
+in case ❤.
 
 #+BEGIN_SRC haskell
     server = return users
 #+END_SRC
 
-\toReview
 The implementation is very simple however. The reader should be
 cautious, to think that return is a keyword. It's a function. What both
 return does is wrap a value into a container. For example an element can
@@ -501,7 +381,7 @@ be wrapped in a list: =return 2 == [2]=. That's all one needs to know
 for now (the interested reader may look at
 [[https://wiki.haskell.org/Monad#Monad_class][monads]]).
 
-*** Proxy
+** Proxy
    :PROPERTIES:
    :CUSTOM_ID: proxy
    :END:
@@ -511,7 +391,6 @@ for now (the interested reader may look at
     userAPI = Proxy
 #+END_SRC
 
-\toReview
 This is just some type
 [[http://hackage.haskell.org/package/base-4.11.1.0/docs/Data-Proxy.html][level
 magic]]. Library author needed type information for a function, but they
@@ -519,7 +398,7 @@ didn't need a value. Proxy does that. It's useful if you store data at
 type level, for example with the datakinds language extension, which was
 seen earlier.
 
-*** Application
+** Application
    :PROPERTIES:
    :CUSTOM_ID: application
    :END:
@@ -529,7 +408,6 @@ seen earlier.
     app = serve userAPI server
 #+END_SRC
 
-\toReview
 This combines the proxy and server. A serve function takes a Proxi API,
 Server API and returns an application. If type Application is inspected
 one can appreciate what serve does for us better:
@@ -538,7 +416,6 @@ one can appreciate what serve does for us better:
     type Application = Request -> (Response -> IO ResponseReceived) -> IO ResponseReceived 
 #+END_SRC
 
-\toReview
 The arrows indicate function arguments. An application receives a
 request, then a callback which expects a =Response= to produce an IO
 action which gives the result =ResponseReceived=. However to return this
@@ -548,7 +425,7 @@ call that callback. The freedom to do whatever one wants is meanwhile
 granted with the IO return type. To compile that =ResponseReceived= has
 to be obtained however.
 
-*** Running it!
+** Running it!
    :PROPERTIES:
    :CUSTOM_ID: running-it
    :END:
@@ -558,7 +435,6 @@ to be obtained however.
     webAppEntry = run 6868 app
 #+END_SRC
 
-\toReview
 Our initial function! Rather than saying hello world the app is ran on
 port 6868 (best port). Now build and run it in one terminal, and in
 another curl it:
@@ -570,12 +446,14 @@ another curl it:
     > [{"email":"isaac@newton.co.uk","name":"Isaac Newton"},{"email":"ae@mc2.org","name":"Albert Einstein"}]
 #+END_SRC
 
-** In conclusion
+#+CAPTION: Good job!
+[[./images/2018/good-job.svg]]
+
+* In conclusion
   :PROPERTIES:
   :CUSTOM_ID: in-conclusion
   :END:
 
-\toReview
 A lot of concepts have been treated within this blog post while also
 moving towards something productive. The reader can now start a new
 project and add arbitrary dependencies. He knows what language
@@ -584,6 +462,5 @@ encountered, and wisely was ignored. In future this post will build on
 top of this work to extend the API and do something with something
 within the handlers. However this post has grown to big already.
 
-\toReview
 The complete code can be found
 [[https://github.com/jappeace/awesome-project-name/tree/simple-servent-setup][here]].

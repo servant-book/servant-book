@@ -20,3 +20,13 @@ cabal.project.local
 cabal.project.local~
 .HTF/
 .ghc.environment.*
+.#book.org
+book.fdb_latexmk
+book.fls
+book.log
+book.out
+book.pdf
+book.tex
+book.toc
+
+_minted-book

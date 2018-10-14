@@ -1,0 +1,50 @@
+\makeatletter
+\begin{titlepage}
+\begin{center}
+
+\vspace*{.06\textheight}
+{\scshape\LARGE LAMBDA LAMBDA LAMBDA \par}\vspace{1.5cm} % University name
+\textsc{\Large Pragmatic Haskell}\\[0.5cm] % Thesis type
+
+\hrule
+\vspace{0.2cm}
+{\huge \bfseries \@title \par}
+\vspace{0.4cm} % Thesis title
+\hrule
+\vspace{0.2cm}
+
+\begin{minipage}[t]{0.4\textwidth}
+\begin{flushleft} \large
+Christian Marie
+\end{flushleft}
+\end{minipage}
+\begin{minipage}[t]{0.4\textwidth}
+\begin{flushright} \large
+Jappie Klooster
+\end{flushright}
+\end{minipage}\\[1.5cm]
+ 
+\includegraphics{logo} % University/department logo - uncomment to place it
+\\[1.0cm]
+
+http://ponies.io/ \\
+https://jappieklooster.nl/ \\[2cm] % Research group name and department name
+ 
+\vfill
+
+{\large \today}\\[4cm] % Date
+ 
+\vfill
+\end{center}
+\end{titlepage}
+
+% delete heading of list of figure so that we can use the org-mode one
+\renewcommand\listoffigures{%
+        \@starttoc{lof}%
+}
+
+% same but now for tables (note the T in starttoc)
+\renewcommand\listoftables{%
+        \@starttoc{lot}%
+}
+\makeatother
